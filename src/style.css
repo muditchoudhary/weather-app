@@ -1,3 +1,86 @@
-.hello {
-	color: orange;
+* {
+	padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.search-bar {
+    display: flex;
+    padding: 8px 18px;
+    justify-content: space-between;
+}
+
+.search-bar input {
+    width: 90%;
+    border-radius: 24px;
+    font-size: 18px;
+    padding: 4px 8px;
+}
+
+.search-bar img {
+    width: 28px;
+    height: auto;
+    margin: 0px 16px;
+    cursor: pointer;
+}
+
+.search-bar img:hover {
+    width: 32px;
+}
+
+.display-window {
+    display: flex;
+    border: 1px solid red;
+}
+
+.display-window div:nth-child(1) {
+    border: 1px solid green;
+    flex: auto;
+}
+
+.display-window div:nth-child(1) p:nth-of-type(1) {
+    font-size: 46px;
+}
+
+.display-window div:nth-child(1) p:nth-of-type(2) {
+    font-size: 22px;
+}
+
+.display-window div:nth-child(1) img {
+    width: 140px;
+    height: auto;
+}
+.display-window div:nth-child(1) p:nth-of-type(3) {
+    font-size: 24px;
+}
+
+.display-window div:nth-child(2) {
+    border: 1px solid orange;
+    flex: auto;
+}
+
+.display-window div:nth-child(2) > .current-temp-text  {
+    font-size: 78px;
+    text-align: center;
+}
+
+.display-window div:nth-child(2) > .minmax-temp-div {
+    display: flex;
+    justify-content: space-around;
+}
+
+.minmax-temp-div p {
+    font-size: 44px;
+
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 16px;
+    border-bottom: 2px solid black;
+}
+
+.top-bar p {
+    font-size: 23px;
 }
