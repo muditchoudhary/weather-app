@@ -2,6 +2,11 @@
 /* eslint-disable max-len */
 /* eslint-disable no-restricted-syntax */
 import searchIcon from '../Assets/Icons/search.svg';
+import GeoCoding from './geocoding';
+import Weather from './weather';
+
+const weatherApi = new Weather('88b60e1429b16a59191816ea76dbe4b9');
+const geoCodingOjb = new GeoCoding('88b60e1429b16a59191816ea76dbe4b9');
 
 class Dom {
 	constructor() {
@@ -25,8 +30,10 @@ class Dom {
 		div.classList.add('search-bar');
 
 		const searchInput = document.createElement('input');
+		searchInput.classList.add('city-name-field');
 		searchInput.placeholder = 'India';
 		const searchBtn = document.createElement('img');
+		searchBtn.classList.add('search-now');
 		searchBtn.src = searchIcon;
 
 		div.append(searchInput, searchBtn);
@@ -41,15 +48,18 @@ class Dom {
 		const divOne = document.createElement('div');
 
 		const cityNameText = document.createElement('p');
+		cityNameText.classList.add('city');
 		cityNameText.textContent = 'Jaipur';
 
 		const dateText = document.createElement('p');
 		dateText.textContent = 'September 20, 2022';
 
 		const weatherImg = document.createElement('img');
+		weatherImg.classList.add('weather-icon');
 		weatherImg.src = 'https://openweathermap.org/img/wn/10d@2x.png';
 
 		const weatherDescriptionText = document.createElement('p');
+		weatherDescriptionText.classList.add('weather-desc');
 		weatherDescriptionText.textContent = 'Cloudy';
 
 		divOne.append(cityNameText, dateText, weatherImg, weatherDescriptionText);
@@ -63,8 +73,10 @@ class Dom {
 		const minMaxTempDiv = document.createElement('div');
 		minMaxTempDiv.classList.add('minmax-temp-div');
 		const maxTempText = document.createElement('p');
+		maxTempText.classList.add('max-temp');
 		maxTempText.textContent = '31 C';
 		const minTempText = document.createElement('p');
+		minTempText.classList.add('min-temp');
 		minTempText.textContent = '24 c';
 
 		minMaxTempDiv.append(maxTempText, minTempText);
@@ -92,6 +104,27 @@ class Dom {
 
 		div.append(topBar);
 		return div;
+	}
+
+	async displayNewWeather() {
+		const cityName = document.querySelector('.city-name-field').value;
+
+		// Getting date from the apis
+		let data = await weatherApi.getCurrentWeather(cityName, 'metric');
+		data = JSON.parse(data);
+		let weatherIcon = await weatherApi.getWeatherIcon('50d');
+		weatherIcon = weatherIcon.url;
+
+		// Updating values in the dom
+		document.querySelector('.city').textContent = data.name;
+		document.querySelector('.weather-icon').src = weatherIcon;
+		document.querySelector('.weather-desc').textContent = data.weather[0].main;
+		document.querySelector('.current-temp-text').textContent = Math.round(data.main.temp);
+		document.querySelector('.max-temp').textContent = Math.round(data.main.temp_max);
+		document.querySelector('.min-temp').textContent = Math.round(data.main.temp_min);
+
+		console.log(data);
+		console.log(weatherIcon);
 	}
 }
 
