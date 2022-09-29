@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable class-methods-use-this */
 import { reject } from 'lodash';
 
@@ -24,6 +25,37 @@ class Weather {
 		try {
 			const response = await fetch(endPoint, { mode: 'cors' });
 			return response;
+		} catch (error) {
+			return error;
+		}
+	}
+
+	getCurrentDate() {
+		const today = new Date();
+
+		const date = `${today.getFullYear()}-0${today.getMonth() + 1}-${today.getDate()}`;
+		return date;
+	}
+
+	filterTodayHourlyWeather(data) {
+		const weatherList = data.list;
+		const todayHourlyWeathers = [];
+		for (let i = 0; i < weatherList.length; i++) {
+			const weatherObj = weatherList[i];
+			if (weatherObj.dt_txt.split(' ')[0] === this.getCurrentDate()) {
+				todayHourlyWeathers.push(weatherObj);
+			}
+		}
+		return todayHourlyWeathers;
+	}
+
+	async getHourlyWeather(cityName, unit) {
+		const endPoint = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${this.accessKey}&units=${unit}`;
+		try {
+			const response = await fetch(endPoint, { mode: 'cors' });
+			let data = await response.text();
+			data = JSON.parse(data);
+			return this.filterTodayHourlyWeather(data);
 		} catch (error) {
 			return error;
 		}

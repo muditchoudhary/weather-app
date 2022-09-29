@@ -1,6 +1,8 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-len */
 /* eslint-disable no-restricted-syntax */
+import { format } from 'date-fns';
 import searchIcon from '../Assets/Icons/search.svg';
 import GeoCoding from './geocoding';
 import Weather from './weather';
@@ -19,6 +21,7 @@ class Dom {
 
 	createApp() {
 		const appWindow = document.createElement('div');
+		appWindow.classList.add('app-window');
 
 		appWindow.append(this.createSearchBar(), this.createDisplayInfoWin(), this.createAdditionalInfoWin());
 
@@ -52,6 +55,7 @@ class Dom {
 		cityNameText.textContent = 'Jaipur';
 
 		const dateText = document.createElement('p');
+		dateText.classList.add('date-text');
 		dateText.textContent = 'September 20, 2022';
 
 		const weatherImg = document.createElement('img');
@@ -92,6 +96,9 @@ class Dom {
 		const div = document.createElement('div');
 
 		const topBar = document.createElement('div');
+
+		const bodySection = document.createElement('div');
+		bodySection.classList.add('additional-info-body-sect');
 		topBar.classList.add('top-bar');
 
 		const topBarOptions = ['Hourly', 'Daily', 'Wind', 'Air Quality'];
@@ -102,8 +109,33 @@ class Dom {
 			topBar.appendChild(optionText);
 		}
 
-		div.append(topBar);
+		div.append(topBar, bodySection);
 		return div;
+	}
+
+	async createHourlyWeatherWidget(cityName, hourlyWeatherData) {
+		const bodySection = document.querySelector('.additional-info-body-sect');
+
+		for (let i = 0; i < hourlyWeatherData.length; i++) {
+			const weatherObj = hourlyWeatherData[i];
+
+			const mainDivBox = document.createElement('div');
+			mainDivBox.classList.add('hourly-weather-card');
+
+			const dateText = document.createElement('p');
+			dateText.textContent = format(new Date(), 'PP');
+
+			const weatherIcon = document.createElement('img');
+			// eslint-disable-next-line no-await-in-loop
+			weatherIcon.src = await weatherApi.getWeatherIcon(cityName, weatherObj.weather[0].icon);
+
+			const tempText = document.createElement('p');
+			tempText.textContent = Math.round(weatherObj.main.temp);
+
+			// appending the parent element
+			mainDivBox.append(dateText, weatherIcon, tempText);
+			bodySection.append(mainDivBox);
+		}
 	}
 
 	async displayNewWeather() {
@@ -112,19 +144,23 @@ class Dom {
 		// Getting date from the apis
 		let data = await weatherApi.getCurrentWeather(cityName, 'metric');
 		data = JSON.parse(data);
-		let weatherIcon = await weatherApi.getWeatherIcon('50d');
+		let weatherIcon = await weatherApi.getWeatherIcon(data.weather[0].icon);
 		weatherIcon = weatherIcon.url;
+		const hourlyWeatherData = await weatherApi.getHourlyWeather(cityName, 'metric');
 
 		// Updating values in the dom
 		document.querySelector('.city').textContent = data.name;
+		document.querySelector('.date-text').textContent = format(new Date(), 'PPP');
 		document.querySelector('.weather-icon').src = weatherIcon;
 		document.querySelector('.weather-desc').textContent = data.weather[0].main;
 		document.querySelector('.current-temp-text').textContent = Math.round(data.main.temp);
 		document.querySelector('.max-temp').textContent = Math.round(data.main.temp_max);
 		document.querySelector('.min-temp').textContent = Math.round(data.main.temp_min);
 
+		// this.createHourlyWeatherWidget(data.name, hourlyWeatherData);
+
 		console.log(data);
-		console.log(weatherIcon);
+		console.log(hourlyWeatherData);
 	}
 }
 

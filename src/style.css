@@ -4,6 +4,22 @@
     box-sizing: border-box;
 }
 
+.blur-div {
+    height: 100vh;
+    width: 100%;
+    background: url("./Assets/Images/bg.jpg") no-repeat;
+	background-position: center center;
+	background-size: cover;
+    filter: blur(5px);
+    position: absolute;
+}
+
+.app-window {
+    position: relative;
+    z-index: 2;
+    padding: 10px;
+}
+
 .search-bar {
     display: flex;
     padding: 8px 18px;
@@ -12,9 +28,17 @@
 
 .search-bar input {
     width: 90%;
-    border-radius: 24px;
+    border: none;
+    background: transparent;
+    border-bottom: 1px solid black;
     font-size: 18px;
-    padding: 4px 8px;
+    padding: 8px 15px;
+    appearance: none;
+    color: white;
+}
+
+::placeholder {
+    color: white;
 }
 
 .search-bar img {
@@ -30,48 +54,60 @@
 
 .display-window {
     display: flex;
-    border: 1px solid red;
+    padding: 10px 85px;
+    padding-bottom: 20px;
 }
 
 .display-window div:nth-child(1) {
-    border: 1px solid green;
     flex: auto;
 }
 
 .display-window div:nth-child(1) p:nth-of-type(1) {
-    font-size: 46px;
+    font-size: 60px;
+    padding: 10px 22px;
+    color: white;
 }
 
 .display-window div:nth-child(1) p:nth-of-type(2) {
-    font-size: 22px;
+    font-size: 25px;
+    color: white;
+    padding: 0px 22px;
 }
 
 .display-window div:nth-child(1) img {
-    width: 140px;
+    width: 160px;
     height: auto;
 }
 .display-window div:nth-child(1) p:nth-of-type(3) {
-    font-size: 24px;
+    font-size: 36px;
+    color: white;
+    padding: 0px 22px;
 }
 
 .display-window div:nth-child(2) {
-    border: 1px solid orange;
     flex: auto;
 }
 
 .display-window div:nth-child(2) > .current-temp-text  {
-    font-size: 78px;
+    font-size: 136px;
     text-align: center;
+    color: white;
+    padding-bottom: 23px;
 }
 
 .display-window div:nth-child(2) > .minmax-temp-div {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .minmax-temp-div p {
-    font-size: 44px;
+    font-size: 68px;
+    color: white;
+}
 
+.max-temp::after {
+    content: '/';
+    padding: 0px 15px;
 }
 
 .top-bar {
@@ -83,4 +119,16 @@
 
 .top-bar p {
     font-size: 23px;
+}
+
+.additional-info-body-sect {
+    display: flex;
+    overflow-y: scroll;
+    flex: 0 0 auto;
+}
+
+.hourly-weather-card {
+    width: 150px;
+    height: 80px;
+    border: 1px solid darkgreen;
 }
