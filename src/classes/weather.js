@@ -33,8 +33,14 @@ class Weather {
 	getCurrentDate() {
 		const today = new Date();
 
-		const date = `${today.getFullYear()}-0${today.getMonth() + 1}-${today.getDate()}`;
-		return date;
+		if ((today.getMonth() + 1) < 9 && today.getDate() < 9) {
+			return `${today.getFullYear()}-0${today.getMonth() + 1}-0${today.getDate()}`;
+		} if ((today.getMonth() + 1) > 9 && today.getDate() <= 9) {
+			return `${today.getFullYear()}-${today.getMonth() + 1}-0${today.getDate()}`;
+		} if ((today.getMonth() + 1) < 9 && today.getDate() > 9) {
+			return `${today.getFullYear()}-0${today.getMonth() + 1}-0${today.getDate()}`;
+		}
+		return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 	}
 
 	filterTodayHourlyWeather(data) {
