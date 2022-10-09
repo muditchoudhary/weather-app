@@ -9,14 +9,7 @@ import Weather from './weather';
 const weatherApi = Weather();
 
 const Dom = (() => {
-	const displayCurrentTime = (hours, minutes) => {
-		const amPM = hours >= 12 ? 'PM' : 'AM';
-		const amPmHour = hours > 12 ? hours - 12 : hours;
-		// hours = hours < 10 ? `0${hours}` : hours;
-		// minutes = minutes < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-		const time = `${amPmHour}:${minutes} ${amPM}`;
-		return time;
-	};
+	let data;
 
 	const createHourlyWeatherIconList = async (hourlyWeatherData) => {
 		const hourlyWeatherIcons = [];
@@ -28,22 +21,59 @@ const Dom = (() => {
 		return hourlyWeatherIcons;
 	};
 
-	const clearHourlyWeatherWidget = () => {
+	const displayCurrentTime = (hours, minutes) => {
+		const amPM = hours >= 12 ? 'PM' : 'AM';
+		const amPmHour = hours > 12 ? hours - 12 : hours;
+		// hours = hours < 10 ? `0${hours}` : hours;
+		// minutes = minutes < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+		const time = `${amPmHour}:${minutes} ${amPM}`;
+		return time;
+	};
+
+	const clearWeatherWidget = () => {
 		const myNode = document.querySelector('.additional-info-body-sect');
 		while (myNode.firstChild) {
 			myNode.removeChild(myNode.lastChild);
 		}
 	};
 
-	const createHourlyWeatherWidget = async (cityName, hourlyWeatherData, weatherIconList) => {
-		clearHourlyWeatherWidget();
+	const createDailyWeatherWidget = async (dailyWeatherData, weatherIconList) => {
+		clearWeatherWidget();
+		const bodySection = document.querySelector('.additional-info-body-sect');
+
+		console.log(dailyWeatherData);
+
+		for (let i = 0; i < dailyWeatherData.length; i++) {
+			const weatherObj = dailyWeatherData[i];
+
+			const mainDivBox = document.createElement('div');
+			mainDivBox.classList.add('weathers-card');
+
+			const dateText = document.createElement('p');
+			dateText.textContent = '9 Oct';
+
+			const weatherIcon = document.createElement('img');
+			weatherIcon.src = weatherIconList[i].url;
+
+			const tempText = document.createElement('p');
+			tempText.classList.add('hourly-temp-text');
+			tempText.textContent = Math.round(weatherObj.main.temp);
+
+			// appending the parent element
+			mainDivBox.append(dateText, weatherIcon, tempText);
+			bodySection.append(mainDivBox);
+		}
+	};
+
+	const createHourlyWeatherWidget = async (hourlyWeatherData, weatherIconList) => {
+		clearWeatherWidget();
 		const bodySection = document.querySelector('.additional-info-body-sect');
 
 		for (let i = 0; i < hourlyWeatherData.length; i++) {
 			const weatherObj = hourlyWeatherData[i];
 
 			const mainDivBox = document.createElement('div');
-			mainDivBox.classList.add('hourly-weather-card');
+			mainDivBox.classList.add('weathers-card');
 
 			const timeText = document.createElement('p');
 			const time = weatherObj.dt_txt.split(' ')[1].split(':');
@@ -62,15 +92,27 @@ const Dom = (() => {
 		}
 	};
 
+	const showHourlyWeather = async () => {
+		const hourlyWeatherData = await weatherApi.getWeather(data.name, 'metric', 'hourly');
+		const weatherIconList = await createHourlyWeatherIconList(hourlyWeatherData);
+		createHourlyWeatherWidget(hourlyWeatherData, weatherIconList);
+	};
+
+	const showDailyWeather = async () => {
+		const dailyWeatherData = await weatherApi.getWeather(data.name, 'metric', 'daily');
+		const weatherIconList = await createHourlyWeatherIconList(dailyWeatherData);
+		createDailyWeatherWidget(dailyWeatherData, weatherIconList);
+	};
+
 	const displayNewWeather = async () => {
 		const cityName = document.querySelector('.city-name-field').value;
 
 		// Getting date from the apis
-		let data = await weatherApi.getCurrentWeather(cityName, 'metric');
+		data = await weatherApi.getCurrentWeather(cityName, 'metric');
 		data = JSON.parse(data);
 		let weatherIcon = await weatherApi.getWeatherIcon(data.weather[0].icon);
 		weatherIcon = weatherIcon.url;
-		const hourlyWeatherData = await weatherApi.getHourlyWeather(cityName, 'metric');
+		const hourlyWeatherData = await weatherApi.getWeather(cityName, 'metric', 'hourly');
 
 		// Updating values in the dom
 		document.querySelector('.city').textContent = data.name;
@@ -81,8 +123,9 @@ const Dom = (() => {
 		document.querySelector('.max-temp').textContent = Math.round(data.main.temp_max);
 		document.querySelector('.min-temp').textContent = Math.round(data.main.temp_min);
 
-		const weatherIconList = await createHourlyWeatherIconList(hourlyWeatherData);
-		createHourlyWeatherWidget(data.name, hourlyWeatherData, weatherIconList);
+		showHourlyWeather();
+		// const weatherIconList = await createHourlyWeatherIconList(hourlyWeatherData);
+		// createHourlyWeatherWidget(data.name, hourlyWeatherData, weatherIconList);
 
 		// console.log(data);
 		console.log(hourlyWeatherData);
@@ -98,11 +141,15 @@ const Dom = (() => {
 		topBar.classList.add('top-bar');
 
 		const topBarOptions = ['Hourly', 'Daily', 'Wind', 'Air Quality'];
+		const methodTopBarOptionsCall = [showHourlyWeather, showDailyWeather, showDailyWeather, showDailyWeather];
+		let i = 0;
 		for (const option of topBarOptions) {
 			const optionText = document.createElement('p');
 			optionText.classList.add(option.split(' ').join('-').toLocaleLowerCase());
+			optionText.addEventListener('click', methodTopBarOptionsCall[i]);
 			optionText.textContent = option;
 			topBar.appendChild(optionText);
+			i += 1;
 		}
 
 		div.append(topBar, bodySection);

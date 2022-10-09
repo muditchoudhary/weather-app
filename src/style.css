@@ -119,15 +119,16 @@
 
 .top-bar p {
     font-size: 23px;
+    cursor: pointer;
 }
 
 .additional-info-body-sect {
     display: flex;
     overflow-x: auto;
-    flex: 0 0 auto;
+    flex: 1 0 auto;
 }
 
-.hourly-weather-card {
+.weathers-card {
     padding: 8px 0px;
     padding-top: 18px;
     width: 150px;
@@ -138,15 +139,15 @@
     align-items: center;
 }
 
-.hourly-weather-card p {
+.weathers-card p {
     font-size: 20px;
 }
 
-.hourly-weather-card img {
+.weathers-card img {
     width: 80px;
     height: auto;
 }
 
-.hourly-weather-card .hourly-temp-text {
+.weathers-card .hourly-temp-text {
     font-size: 30px;
 }

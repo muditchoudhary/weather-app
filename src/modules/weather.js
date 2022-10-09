@@ -39,35 +39,54 @@ const Weather = () => {
 		return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 	};
 
-	const filterTodayHourlyWeather = (data) => {
+	const filterWeather = (data, weatherFormat) => {
 		const weatherList = data.list;
-		const todayHourlyWeathers = [];
-		for (let i = 0; i < weatherList.length; i++) {
-			const weatherObj = weatherList[i];
-			if (weatherObj.dt_txt.split(' ')[0] === getCurrentDate()) {
-				todayHourlyWeathers.push(weatherObj);
+		const filteredWeatherDatas = [];
+		if (weatherFormat === 'hourly') {
+			for (let i = 0; i < weatherList.length; i++) {
+				const weatherObj = weatherList[i];
+				if (weatherObj.dt_txt.split(' ')[0] === getCurrentDate()) {
+					filteredWeatherDatas.push(weatherObj);
+				}
+			}
+		} if (weatherFormat === 'daily') {
+			const datesLists = [];
+			for (let i = 0; i < weatherList.length; i++) {
+				const weatherObj = weatherList[i];
+				if (weatherObj.dt_txt.split(' ')[0] !== getCurrentDate() && !datesLists.includes(weatherObj.dt_txt.split(' ')[0])) {
+					filteredWeatherDatas.push(weatherObj);
+					datesLists.push(weatherObj.dt_txt.split(' ')[0]);
+				}
 			}
 		}
-		return todayHourlyWeathers;
+
+		return filteredWeatherDatas;
 	};
 
-	const getHourlyWeather = async (cityName, unit) => {
+	const getWeather = async (cityName, unit, weatherFormat) => {
 		const endPoint = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${accessKey}&units=${unit}`;
+		let returnValue;
 		try {
 			const response = await fetch(endPoint, { mode: 'cors' });
 			let data = await response.text();
 			data = JSON.parse(data);
-			return filterTodayHourlyWeather(data);
+			if (weatherFormat === 'hourly') {
+				returnValue = filterWeather(data, 'hourly');
+			} if (weatherFormat === 'daily') {
+				returnValue = filterWeather(data, 'daily');
+			}
 		} catch (error) {
 			return error;
 		}
+
+		return returnValue;
 	};
 
 	return {
 		getCurrentWeather,
 		getWeatherIcon,
-		filterTodayHourlyWeather,
-		getHourlyWeather,
+		filterWeather,
+		getWeather,
 	};
 };
 
