@@ -1,10 +1,9 @@
 import _ from 'lodash';
 import './style.css';
-import Dom from './classes/dom';
-import Weather from './classes/weather';
+import Dom from './modules/dom';
+import Weather from './modules/weather';
 
-const weatherApp = new Dom();
-const weatherApi = new Weather('88b60e1429b16a59191816ea76dbe4b9');
+const weatherApp = Dom;
 
 // Adding click listener on the app
 const searchBtn = document.querySelector('.search-now');

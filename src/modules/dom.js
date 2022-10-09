@@ -9,14 +9,57 @@ import Weather from './weather';
 const weatherApi = Weather();
 
 const Dom = (() => {
-	const createHourlyWeatherIconList = (hourlyWeatherData) => {
+	const displayCurrentTime = (hours, minutes) => {
+		const amPM = hours >= 12 ? 'PM' : 'AM';
+		const amPmHour = hours > 12 ? hours - 12 : hours;
+		// hours = hours < 10 ? `0${hours}` : hours;
+		// minutes = minutes < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+		const time = `${amPmHour}:${minutes} ${amPM}`;
+		return time;
+	};
+
+	const createHourlyWeatherIconList = async (hourlyWeatherData) => {
 		const hourlyWeatherIcons = [];
 		for (let i = 0; i < hourlyWeatherData.length; i++) {
-			hourlyWeatherIcons.push(weatherApi.getWeatherIcon(hourlyWeatherData[i].weather[0].icon));
+			// eslint-disable-next-line no-await-in-loop
+			hourlyWeatherIcons.push(await weatherApi.getWeatherIcon(hourlyWeatherData[i].weather[0].icon));
 		}
 
-		// return await Promise.all(hourlyWeatherIcons)
-		return 'hello';
+		return hourlyWeatherIcons;
+	};
+
+	const clearHourlyWeatherWidget = () => {
+		const myNode = document.querySelector('.additional-info-body-sect');
+		while (myNode.firstChild) {
+			myNode.removeChild(myNode.lastChild);
+		}
+	};
+
+	const createHourlyWeatherWidget = async (cityName, hourlyWeatherData, weatherIconList) => {
+		clearHourlyWeatherWidget();
+		const bodySection = document.querySelector('.additional-info-body-sect');
+
+		for (let i = 0; i < hourlyWeatherData.length; i++) {
+			const weatherObj = hourlyWeatherData[i];
+
+			const mainDivBox = document.createElement('div');
+			mainDivBox.classList.add('hourly-weather-card');
+
+			const timeText = document.createElement('p');
+			const time = weatherObj.dt_txt.split(' ')[1].split(':');
+			timeText.textContent = displayCurrentTime(time[0], time[1]);
+
+			const weatherIcon = document.createElement('img');
+			weatherIcon.src = weatherIconList[i].url;
+
+			const tempText = document.createElement('p');
+			tempText.classList.add('hourly-temp-text');
+			tempText.textContent = Math.round(weatherObj.main.temp);
+
+			// appending the parent element
+			mainDivBox.append(timeText, weatherIcon, tempText);
+			bodySection.append(mainDivBox);
+		}
 	};
 
 	const displayNewWeather = async () => {
@@ -38,36 +81,11 @@ const Dom = (() => {
 		document.querySelector('.max-temp').textContent = Math.round(data.main.temp_max);
 		document.querySelector('.min-temp').textContent = Math.round(data.main.temp_min);
 
-		createHourlyWeatherIconList(hourlyWeatherData);
-		// this.createHourlyWeatherWidget(data.name, hourlyWeatherData);
+		const weatherIconList = await createHourlyWeatherIconList(hourlyWeatherData);
+		createHourlyWeatherWidget(data.name, hourlyWeatherData, weatherIconList);
 
-		console.log(data);
+		// console.log(data);
 		console.log(hourlyWeatherData);
-	};
-
-	const createHourlyWeatherWidget = async (cityName, hourlyWeatherData) => {
-		const bodySection = document.querySelector('.additional-info-body-sect');
-
-		for (let i = 0; i < hourlyWeatherData.length; i++) {
-			const weatherObj = hourlyWeatherData[i];
-
-			const mainDivBox = document.createElement('div');
-			mainDivBox.classList.add('hourly-weather-card');
-
-			const dateText = document.createElement('p');
-			dateText.textContent = format(new Date(), 'PP');
-
-			const weatherIcon = document.createElement('img');
-			// eslint-disable-next-line no-await-in-loop
-			weatherIcon.src = await weatherApi.getWeatherIcon(cityName, weatherObj.weather[0].icon);
-
-			const tempText = document.createElement('p');
-			tempText.textContent = Math.round(weatherObj.main.temp);
-
-			// appending the parent element
-			mainDivBox.append(dateText, weatherIcon, tempText);
-			bodySection.append(mainDivBox);
-		}
 	};
 
 	const createAdditionalInfoWin = () => {

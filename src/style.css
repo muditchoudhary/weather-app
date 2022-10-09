@@ -123,12 +123,30 @@
 
 .additional-info-body-sect {
     display: flex;
-    overflow-y: scroll;
+    overflow-x: auto;
     flex: 0 0 auto;
 }
 
 .hourly-weather-card {
+    padding: 8px 0px;
+    padding-top: 18px;
     width: 150px;
-    height: 80px;
-    border: 1px solid darkgreen;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    align-items: center;
+}
+
+.hourly-weather-card p {
+    font-size: 20px;
+}
+
+.hourly-weather-card img {
+    width: 80px;
+    height: auto;
+}
+
+.hourly-weather-card .hourly-temp-text {
+    font-size: 30px;
 }
