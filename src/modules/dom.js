@@ -43,6 +43,10 @@ const Dom = (() => {
 
 		console.log(dailyWeatherData);
 
+		const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+			'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+		];
+
 		for (let i = 0; i < dailyWeatherData.length; i++) {
 			const weatherObj = dailyWeatherData[i];
 
@@ -50,7 +54,11 @@ const Dom = (() => {
 			mainDivBox.classList.add('weathers-card');
 
 			const dateText = document.createElement('p');
-			dateText.textContent = '9 Oct';
+			// eslint-disable-next-line prefer-destructuring
+			let date = weatherObj.dt_txt.split(' ')[0];
+			//          Date                 month from the month list
+			date = `${date[8] + date[9]}th ${monthNames[(date[5] + date[6]) - 1]}`;
+			dateText.textContent = date;
 
 			const weatherIcon = document.createElement('img');
 			weatherIcon.src = weatherIconList[i].url;
@@ -199,7 +207,6 @@ const Dom = (() => {
 
 		const searchInput = document.createElement('input');
 		searchInput.classList.add('city-name-field');
-		searchInput.placeholder = 'Delhi';
 		searchInput.value = 'Delhi';
 		const searchBtn = document.createElement('img');
 		searchBtn.classList.add('search-now');

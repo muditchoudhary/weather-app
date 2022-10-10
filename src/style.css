@@ -81,7 +81,7 @@
 .display-window div:nth-child(1) p:nth-of-type(3) {
     font-size: 36px;
     color: white;
-    padding: 0px 22px;
+    padding: 0px 20px;
 }
 
 .display-window div:nth-child(2) {
@@ -92,7 +92,7 @@
     font-size: 136px;
     text-align: center;
     color: white;
-    padding-bottom: 23px;
+    padding-bottom: 36px;
 }
 
 .display-window div:nth-child(2) > .minmax-temp-div {
