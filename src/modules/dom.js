@@ -57,7 +57,7 @@ const Dom = (() => {
 
 			const tempText = document.createElement('p');
 			tempText.classList.add('hourly-temp-text');
-			tempText.textContent = Math.round(weatherObj.main.temp);
+			tempText.textContent = `${Math.round(weatherObj.main.temp)}\u00B0c`;
 
 			// appending the parent element
 			mainDivBox.append(dateText, weatherIcon, tempText);
@@ -84,7 +84,7 @@ const Dom = (() => {
 
 			const tempText = document.createElement('p');
 			tempText.classList.add('hourly-temp-text');
-			tempText.textContent = Math.round(weatherObj.main.temp);
+			tempText.textContent = `${Math.round(weatherObj.main.temp)}\u00B0c`;
 
 			// appending the parent element
 			mainDivBox.append(timeText, weatherIcon, tempText);
@@ -119,16 +119,11 @@ const Dom = (() => {
 		document.querySelector('.date-text').textContent = format(new Date(), 'PPP');
 		document.querySelector('.weather-icon').src = weatherIcon;
 		document.querySelector('.weather-desc').textContent = data.weather[0].main;
-		document.querySelector('.current-temp-text').textContent = Math.round(data.main.temp);
-		document.querySelector('.max-temp').textContent = Math.round(data.main.temp_max);
-		document.querySelector('.min-temp').textContent = Math.round(data.main.temp_min);
+		document.querySelector('.current-temp-text').textContent = `${Math.round(data.main.temp)}\u00B0c`;
+		document.querySelector('.max-temp').textContent = `${Math.round(data.main.temp_max)}\u00B0c`;
+		document.querySelector('.min-temp').textContent = `${Math.round(data.main.temp_min)}\u00B0c`;
 
 		showHourlyWeather();
-		// const weatherIconList = await createHourlyWeatherIconList(hourlyWeatherData);
-		// createHourlyWeatherWidget(data.name, hourlyWeatherData, weatherIconList);
-
-		// console.log(data);
-		console.log(hourlyWeatherData);
 	};
 
 	const createAdditionalInfoWin = () => {
@@ -140,8 +135,8 @@ const Dom = (() => {
 		bodySection.classList.add('additional-info-body-sect');
 		topBar.classList.add('top-bar');
 
-		const topBarOptions = ['Hourly', 'Daily', 'Wind', 'Air Quality'];
-		const methodTopBarOptionsCall = [showHourlyWeather, showDailyWeather, showDailyWeather, showDailyWeather];
+		const topBarOptions = ['Hourly', 'Daily'];
+		const methodTopBarOptionsCall = [showHourlyWeather, showDailyWeather];
 		let i = 0;
 		for (const option of topBarOptions) {
 			const optionText = document.createElement('p');
@@ -164,19 +159,15 @@ const Dom = (() => {
 
 		const cityNameText = document.createElement('p');
 		cityNameText.classList.add('city');
-		cityNameText.textContent = 'Jaipur';
 
 		const dateText = document.createElement('p');
 		dateText.classList.add('date-text');
-		dateText.textContent = 'September 20, 2022';
 
 		const weatherImg = document.createElement('img');
 		weatherImg.classList.add('weather-icon');
-		weatherImg.src = 'https://openweathermap.org/img/wn/10d@2x.png';
 
 		const weatherDescriptionText = document.createElement('p');
 		weatherDescriptionText.classList.add('weather-desc');
-		weatherDescriptionText.textContent = 'Cloudy';
 
 		divOne.append(cityNameText, dateText, weatherImg, weatherDescriptionText);
 
@@ -184,16 +175,14 @@ const Dom = (() => {
 
 		const currentTempText = document.createElement('p');
 		currentTempText.classList.add('current-temp-text');
-		currentTempText.textContent = '28 C';
 
 		const minMaxTempDiv = document.createElement('div');
 		minMaxTempDiv.classList.add('minmax-temp-div');
 		const maxTempText = document.createElement('p');
 		maxTempText.classList.add('max-temp');
-		maxTempText.textContent = '31 C';
+
 		const minTempText = document.createElement('p');
 		minTempText.classList.add('min-temp');
-		minTempText.textContent = '24 c';
 
 		minMaxTempDiv.append(maxTempText, minTempText);
 
@@ -210,7 +199,8 @@ const Dom = (() => {
 
 		const searchInput = document.createElement('input');
 		searchInput.classList.add('city-name-field');
-		searchInput.placeholder = 'India';
+		searchInput.placeholder = 'Delhi';
+		searchInput.value = 'Delhi';
 		const searchBtn = document.createElement('img');
 		searchBtn.classList.add('search-now');
 		searchBtn.src = searchIcon;
@@ -238,7 +228,5 @@ const Dom = (() => {
 		displayNewWeather,
 	};
 })();
-
-Dom.main();
 
 export default Dom;
